@@ -12,8 +12,8 @@ import simpy
 
 #declaracion de variables para control de ejecuccion de procesos
 RANDOM_SEED = 42
-CREATE_PROCESS = 150
-INTERVALO_PRO = 10.0 
+CREATE_PROCESS = 150 // la cantidad a procesar
+INTERVALO_PRO = 10.0 // se varia el intervalo 
 
 # genera procesos con lo requisitos planteados en la hoja de trabajo
 def generador(enviroment, NumPro, intervalo, Memoria ,CPU, WTime):
@@ -85,7 +85,7 @@ enviroment = simpy.Environment()
 
 # Ejecutar los procesos del sistema de simulacion 
 CPU = simpy.Resource(enviroment, capacity=1)
-Memoria = simpy.Container(enviroment, init=100, capacity=100)
+Memoria = simpy.Container(enviroment, init=100, capacity=100)// la capacidad de memoria RAM
 WTime = simpy.Resource(enviroment, capacity=1)
 enviroment.process(generador(enviroment, CREATE_PROCESS, INTERVALO_PRO, Memoria, CPU, WTime))
 SimuladorT = 0
