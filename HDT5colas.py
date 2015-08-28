@@ -26,6 +26,8 @@ def generador(enviroment, NumPro, intervalo, Memoria ,CPU, WTime):
         timeSimulator = random.expovariate(1.0 / intervalo) 
         yield enviroment.timeout(timeSimulator)
 
+# proceso principal del simulador
+
 def proceso(enviroment, InstLL, CMemory, Memoria, CPU, WTime, CRandom):
     global SimuladorT, SimuladorDEV #simulador para controlar el tiempo de ejecucion
     #enviroment como tiempo actual
@@ -55,22 +57,42 @@ def proceso(enviroment, InstLL, CMemory, Memoria, CPU, WTime, CRandom):
             # control del proceso segun valores dados
             if CRandom > 0:
                 PROWait = random.randint(1,2) # numero aleatorio para ver si espera o la inst se termina
-                if PROWait == 1: 
+                if PROWait == 1: # condiciones de que pasa si sale 1 , es decir que debe esperar
                     with WTime.request() as TMRequest: 
-                        yield TMRequest 
+                        yield TMRequest #se solicita tiempo de espera
                         print ('P: %7.4fs %s: Waiting... >>' % (NProcess, InstLL))
 
                         yield enviroment.timeout(1)
-              
+              # fin de instrucciones
                 print('P: %7.4fs %s: Ready >> Continue >>' % (NProcess, InstLL))
+
+        # tempo del proceso atualmente
         ProcTime = enviroment.now - NProcess
         print ('p: %7.4fs %s:INST Terminada, ExecutionT >> %s' % (enviroment.now, InstLL, ProcTime))
-		
+	# RAM disponible	
         with Memoria.put(CMemory) as RefreshRAM:
             yield RefreshRAM
             print ('P: %7.4fs %s: Liberando RAM %s' % (enviroment.now, InstLL, CMemory))
-			
+	# Tiempo en ejecucion del simulador		
         SimuladorT = SimuladorT + (enviroment.now - NProcess)
         SimuladorDEV = (SimuladorT*SimuladorT) + (SimuladorDEV)
-        print('P: %7.4fs Memoria utilizada / Revision RAM%6.3f >> tiempo Actual %s' % (enviroment.now, Memoria.level, SimuladorT))  
+        print('P: %7.4fs Memoria utilizada / Revision RAM%6.3f >> tiempo Actual %s' % (enviroment.now, Memoria.level, SimuladorT))        
 
+# se incia la simulacion del sistema operativo
+print('>> System.Start <<')
+random.seed(RANDOM_SEED)
+enviroment = simpy.Environment()
+
+# Ejecutar los procesos del sistema de simulacion 
+CPU = simpy.Resource(enviroment, capacity=1)
+Memoria = simpy.Container(enviroment, init=100, capacity=100)
+WTime = simpy.Resource(enviroment, capacity=1)
+enviroment.process(generador(enviroment, CREATE_PROCESS, INTERVALO_PRO, Memoria, CPU, WTime))
+SimuladorT = 0
+SimuladorDEV = 0
+enviroment.run()
+print "Tiempo de Ejecucion: " , SimuladorT, ": Promedio tiempo: " , SimuladorT/CREATE_PROCESS, ": Desviacion Estandar: " , ((SimuladorDEV/CREATE_PROCESS)**(0.5))
+
+       
+            
+           
