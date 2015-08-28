@@ -76,5 +76,3 @@ enviroment.process(generador(enviroment, CREATE_PROCESS, INTERVALO_PRO, Memoria,
 SimuladorT = 0
 SimuladorDEV = 0
 enviroment.run()
-print "Tiempo de Ejecucion: " , SimuladorT, ": Promedio tiempo: " , SimuladorT/CREATE_PROCESS, ": Desviacion Estandar: " , ((SimuladorDEV/CREATE_PROCESS)**(0.5))
-
