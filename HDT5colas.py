@@ -12,7 +12,7 @@ import math
 
 #declaracion de variables para control de ejecuccion de procesos
 RANDOM_SEED = 42
-CREATE_PROCESS = 25
+CREATE_PROCESS = 200
 INTERVALO_PRO = 10.0
 
 # genera procesos con lo requisitos planteados en la hoja de trabajo
@@ -87,7 +87,7 @@ random.seed(RANDOM_SEED)
 enviroment = simpy.Environment()
 
 # Ejecutar los procesos del sistema de simulacion
-CPU = simpy.Resource(enviroment, capacity=1)
+CPU = simpy.Resource(enviroment, capacity=2)
 Memoria = simpy.Container(enviroment, init=100, capacity=100)
 WTime = simpy.Resource(enviroment, capacity=1)
 enviroment.process(generador(enviroment, CREATE_PROCESS, INTERVALO_PRO, Memoria, CPU, WTime))
@@ -95,4 +95,3 @@ SimuladorT = 0
 SimuladorDEV = 0
 enviroment.run()
 print "Tiempo de Ejecucion: " , SimuladorT, ": Promedio tiempo: " , (SimuladorT/CREATE_PROCESS), ": Desviacion Estandar: " , (math.sqrt(SimuladorDEV))
-
